@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 namespace Quick.LiteDB.Plus.Test
 {
     [Table("ccc")]
-    public class Customer
+    public class Customer : BaseModel
     {
-        public string Id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
         public string[] Phones { get; set; }

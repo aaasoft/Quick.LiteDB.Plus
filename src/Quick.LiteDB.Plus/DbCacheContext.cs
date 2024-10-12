@@ -149,7 +149,7 @@ namespace Quick.LiteDB.Plus
                 List<Delegate> list = null;
                 if (!updatedHandlerDict.ContainsKey(type))
                     return;
-                    list = updatedHandlerDict[type];
+                list = updatedHandlerDict[type];
                 if (list.Contains(handler))
                     list.Remove(handler);
             }
@@ -242,7 +242,7 @@ namespace Quick.LiteDB.Plus
             {
                 dbContext.Add(model);
             });
-            
+
             if (donotCacheTypeHashSet.Contains(type))
                 return;
             IDictionary dict = null;
@@ -257,7 +257,7 @@ namespace Quick.LiteDB.Plus
                 dict.Add(model, model);
             }
             //通知添加
-            if(addedHandlerDict.ContainsKey(type))
+            if (addedHandlerDict.ContainsKey(type))
             {
                 var list = addedHandlerDict[type];
                 foreach (var handler in list)
@@ -300,7 +300,7 @@ namespace Quick.LiteDB.Plus
                 foreach (var handler in list)
                     foreach (var model in rows)
                         handler.DynamicInvoke(model);
-            }            
+            }
         }
 
         public void RemoveRange<T>(T[] rows, bool recursive = false, DbContext dbContext = null)
@@ -351,11 +351,7 @@ namespace Quick.LiteDB.Plus
 
         public void Update<T>(T model)
         {
-            Update(typeof(T), model);
-        }
-
-        public void Update(Type type, object model)
-        {
+            var type = typeof(T);
             if (onlyCacheTypeHashSet.Contains(type))
                 throw new ApplicationException($"仅缓存类型[{type.FullName}]数据不能更新。");
 
@@ -364,7 +360,7 @@ namespace Quick.LiteDB.Plus
             {
                 dbContext.Update(model);
             });
-            
+
             if (donotCacheTypeHashSet.Contains(type))
                 return;
 
@@ -395,11 +391,7 @@ namespace Quick.LiteDB.Plus
 
         public void Remove<T>(T model, bool recursive = false, bool deleteFromDb = true)
         {
-            Remove(typeof(T), model, recursive, deleteFromDb);
-        }
-
-        public void Remove(Type type, object model,bool recursive=false, bool deleteFromDb = true)
-        {
+            var type = typeof(T);
             if (onlyCacheTypeHashSet.Contains(type))
                 throw new ApplicationException($"仅缓存类型[{type.FullName}]数据不能删除。");
 

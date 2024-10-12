@@ -3,12 +3,15 @@ using Quick.LiteDB.Plus;
 using Quick.LiteDB.Plus.Test;
 
 //测试ConfigDbContext
-ConfigDbContext.Init(@"Config.db", modelBuilder =>
+ConfigDbContext.Init(@"Config.litedb", modelBuilder =>
 {
     modelBuilder.Entity<Customer>(c => c.EnsureIndex(t => t.Id, true));
 });
 ConfigDbContext.CacheContext.LoadCache();
-var a = ConfigDbContext.CacheContext.Query<Customer>();
+var a = ConfigDbContext.CacheContext.Find(new Customer() { Id = "f461337e661c43cdb83936da35c95183" });
+a.Name="123";
+ConfigDbContext.CacheContext.Update(a);
+
 ConfigDbContext.CacheContext.Add(new Customer
 {
     Id = Guid.NewGuid().ToString("N"),
