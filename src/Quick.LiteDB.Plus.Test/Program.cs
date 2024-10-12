@@ -8,6 +8,7 @@ ConfigDbContext.Init(@"Config.db", modelBuilder =>
     modelBuilder.Entity<Customer>(c => c.EnsureIndex(t => t.Id, true));
 });
 ConfigDbContext.CacheContext.LoadCache();
+var a = ConfigDbContext.CacheContext.Query<Customer>();
 ConfigDbContext.CacheContext.Add(new Customer
 {
     Id = Guid.NewGuid().ToString("N"),

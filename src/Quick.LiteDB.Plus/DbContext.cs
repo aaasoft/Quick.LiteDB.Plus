@@ -60,12 +60,21 @@ namespace Quick.LiteDB.Plus
             Database?.Dispose();
         }
 
-        public virtual IEnumerable<ILiteCollection<BsonDocument>> GetCollections()
+        public Type[] GetMappedTypes()
         {
-            foreach (var collectionName in Database.GetCollectionNames())
-            {
-                yield return Database.GetCollection(collectionName);
-            }
+            return collectionNameDict.Keys.ToArray();
+        }
+
+        public object[] GetAllData(Type type)
+        {
+            var getCollectionMethod = this.GetType().GetMethod(nameof(GetCollection), 1, new Type[0]);
+            var getCollectionMethodImpl = getCollectionMethod.MakeGenericMethod(type);
+            var collection = getCollectionMethodImpl.Invoke(this, null);
+            var collectionType = typeof(ILiteCollection<>).MakeGenericType(type);
+            var queryMethod = collectionType.GetMethod(nameof(ILiteCollection<object>.Query));
+            var query = queryMethod.Invoke(collection, null);
+            var toArrayMethod = typeof(ILiteQueryableResult<>).MakeGenericType(type).GetMethod(nameof(ILiteQueryableResult<object>.ToArray));
+            return (object[])toArrayMethod.Invoke(query, null);
         }
     }
 }

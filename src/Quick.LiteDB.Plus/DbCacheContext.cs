@@ -76,10 +76,8 @@ namespace Quick.LiteDB.Plus
         {
             UseDbContext(dbContext =>
             {
-                foreach (var collection in dbContext.GetCollections())
+                foreach (var clazz in dbContext.GetMappedTypes())
                 {
-                    var entityMapper = collection.EntityMapper;
-                    var clazz = entityMapper.ForType;
                     //如果类型在不要缓存集合里面，则忽略
                     if (donotCacheTypeHashSet.Contains(clazz))
                         continue;
@@ -87,12 +85,7 @@ namespace Quick.LiteDB.Plus
                     if (onlyCacheTypeHashSet.Contains(clazz))
                         continue;
 
-                    Dictionary<object, object> dict = new Dictionary<object, object>();
-                    foreach (var doc in collection.Query().ToEnumerable())
-                    {
-                        var obj = entityMapper.CreateInstance(doc);
-                        dict[obj] = obj;
-                    }                        
+                    Dictionary<object, object> dict = dbContext.GetAllData(clazz).ToDictionary(t => t, t => t);
                     cacheDict[clazz] = dict;
                     //如果类型有依赖关系
                     if (typeof(IHasDependcyRelation).IsAssignableFrom(clazz))
