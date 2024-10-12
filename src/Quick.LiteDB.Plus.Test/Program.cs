@@ -2,6 +2,23 @@
 using Quick.LiteDB.Plus;
 using Quick.LiteDB.Plus.Test;
 
+//测试ConfigDbContext
+ConfigDbContext.Init(@"Config.db", modelBuilder =>
+{
+    modelBuilder.Entity<Customer>(c => c.EnsureIndex(t => t.Id, true));
+});
+ConfigDbContext.CacheContext.LoadCache();
+ConfigDbContext.CacheContext.Add(new Customer
+{
+    Id = Guid.NewGuid().ToString("N"),
+    Name = "John Doe_" + DateTime.Now.Ticks,
+    Phones = new string[] { "8000-0000", "9000-0000" },
+    Age = 39,
+    IsActive = true
+}
+);
+
+//测试备份和还原
 using (var db = new LiteDatabase(@"MyData.db"))
 {
     var backupContext = new LiteDatabaseBackupContext(new Dictionary<string, string>()
