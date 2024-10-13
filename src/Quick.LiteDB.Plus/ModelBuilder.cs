@@ -13,7 +13,7 @@ namespace Quick.LiteDB.Plus
             this.dbContext = dbContext;
         }
 
-        public void Entity<T>(Action<ILiteCollection<T>> collectionAction)
+        public void Entity<T>(Action<ILiteCollection<T>> collectionAction = null)
         {
             var type = typeof(T);
             var collectionName = type.FullName;
@@ -21,8 +21,11 @@ namespace Quick.LiteDB.Plus
             if (tableAttribute != null)
                 collectionName = tableAttribute.Name;
             dbContext.RegisterCollection(type, collectionName);
-            var collection = dbContext.GetCollection<T>();
-            collectionAction(collection);
+            if (collectionAction != null)
+            {
+                var collection = dbContext.GetCollection<T>();
+                collectionAction(collection);
+            }
         }
     }
 }
